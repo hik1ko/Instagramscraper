@@ -22,6 +22,7 @@ async def instagram_video_sender(message: Message):
     if videos:
         for video in videos:
             await message.answer_video(video)
+    await message.delete()
     await message.answer(caption)
 
 
@@ -31,4 +32,3 @@ async def tiktok_sender(message: Message):
     await message.answer_video(video)
     await message.answer(title)
     await message.answer_audio(music)
-

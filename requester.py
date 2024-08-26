@@ -47,17 +47,35 @@ async def tiktok_requester(https_url: str):
     return data.get('video')[0], data.get('music')[0], data.get('description')[0]
 
 
-def youtube_requester(https_url: str):
-    url = "https://fb-video-reels.p.rapidapi.com/smvd/get/all"
-
-    querystring = {"url": "https://youtu.be/JsC5XWMEkII?feature=shared"}
-
-    headers = {
-        "x-rapidapi-key": "b7b963b1c6mshdf4b4e9eb8bce98p1d260bjsnd1174d8514f7",
-        "x-rapidapi-host": "fb-video-reels.p.rapidapi.com"
-    }
-
-    response = requests.get(url, headers=headers, params=querystring)
-
-    pprint(response.json())
-
+# def youtube_requester(https_url: str):
+#     url = "https://youtube-quick-video-downloader.p.rapidapi.com/api/youtube/links"
+#
+#     payload = {"url": "https://youtu.be/ecEelzf_zqg?feature=shared"}
+#     headers = {
+#         "x-rapidapi-key": "b7b963b1c6mshdf4b4e9eb8bce98p1d260bjsnd1174d8514f7",
+#         "x-rapidapi-host": "youtube-quick-video-downloader.p.rapidapi.com",
+#         "Content-Type": "application/json",
+#         "X-Forwarded-For": "70.41.3.18"
+#     }
+#
+#     response = requests.post(url, json=payload, headers=headers)
+#
+#     pprint(response.json())
+#
+#
+# def fb_requester(https_url: str):
+#     url = "https://facebook-video-download.p.rapidapi.com/api/fetchFacebook"
+#
+#     payload = {"url": https_url}
+#     headers = {
+#         "x-rapidapi-key": "b7b963b1c6mshdf4b4e9eb8bce98p1d260bjsnd1174d8514f7",
+#         "x-rapidapi-host": "facebook-video-download.p.rapidapi.com",
+#         "Content-Type": "application/json"
+#     }
+#
+#     response = requests.post(url, json=payload, headers=headers)
+#
+#     pprint(response.json())
+#
+#
+# fb_requester('https://www.facebook.com/v/fUdZbQFjJquBQGqM/')
