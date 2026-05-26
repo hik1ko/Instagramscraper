@@ -1,0 +1,78 @@
+/* CW3 Estimating production function*/
+
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\CW3"
+
+use blundell_bond_2000_production_function, clear
+
+* 4. (a) How many firms does the database contain?
+codebook id
+* 509 firms
+
+* 4. (b) How many years? In which range (first and last year)?
+ta year
+
+* 5. Plot the distribution of the variables sales, labor and capital.
+
+hist sales, ti("Sales") name(g1, replace)
+*graph box sales
+hist labor, ti("Labor") name(g2, replace)
+
+hist capital, ti("Capital") name(g3, replace)
+
+graph combine g1 g2 g3, r(1)
+graph drop g1 g2 g3
+
+* computing logarithms
+ge log_sales = log(sales)
+hist log_sales, ti("Log Sales") name(g1, replace)
+
+ge log_labor = log(labor)
+ge log_capital = log(capital)
+
+hist log_labor, ti("Log Labor") name(g2, replace)
+hist log_capital, ti("Log Capital") name(g3, replace)
+graph combine g1 g2 g3, r(1)
+graph drop g1 g2 g3
+
+* 6. Find an appropriate graph to show the relation between sales and labor.
+
+scatter sales labor
+
+scatter log_sales log_labor
+
+
+* 7. Now, you assume that the production function can be approximated using a Cobb-Douglas with labor (L) and capital (K) as inputs. Estimate the appropriate regression assuming that the Total Factor Productivity(A) is independent from the two inputs L and K.
+
+regress log_sales log_labor log_capital
+
+* 9. (b) Firm-Fixed Effects estimator
+regress log_sales log_labor log_capital i.id
+
+
+reghdfe log_sales log_labor log_capital, absorb(id)
+
+xtset id year
+xtreg log_sales log_labor log_capital, fe
+
+* 9. (c) Firm+Year-Fixed Effects estimator
+reghdfe log_sales log_labor log_capital, absorb(id year)
+
+xtreg log_sales log_labor log_capital i.year, fe
+
+testparm i.year
+
+* 9. (d) Fixed Effects + Cochrane-Orcutt estimator
+xtreg log_sales log_capital log_labor l.log_sales l.log_capital l.log_labor i.year, fe
+
+*di -_b[l.log_labor]/_b[log_labor]
+
+lincom log_labor + log_capital -1
+
+* 11. Now, you want to see if alternative production functions may better fit. For example, you want... blabla
+
+ge ratio_k_l = capital/labor
+
+regress log_sales ratio_k_l
+
+
+

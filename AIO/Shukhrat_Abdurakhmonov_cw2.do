@@ -1,0 +1,42 @@
+cd "C:\Users\shuhr\OneDrive\Documents\stata\AIO"
+
+// import the data from csv file
+import delimited summer_products_with_rating.csv
+
+describe
+
+// save the data as .dta file for future using
+save summer_products_with_rating
+
+//5
+
+scatter units_sold price, title("Units Sold vs. Price")
+
+//6 
+
+regress units_sold price
+
+//8
+
+gen price_sq = price^2
+regress units_sold price price_sq 
+
+//10
+
+gen ln_units_sold = ln(units_sold)
+gen ln_price = ln(price)
+
+regress ln_units_sold ln_price
+
+//11
+
+regress ln_units_sold ln_price rating
+
+//12 
+
+encode size, gen(size_num)
+regress ln_units_sold ln_price rating i.size_num
+
+//13
+
+testparm i.size_num
