@@ -1,0 +1,82 @@
+*----------------------------------------*
+* Classwork 1
+*----------------------------------------*
+
+*3. Set the working directory
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\CW1"
+
+*5. Load the online database named "census2" (by doing webuse census2)
+webuse census2, clear
+
+*6. Find an appropriate graph to show the distribution of the variable region.
+graph bar, over(region)
+graph bar (count), over(region)
+graph pie, over(region)
+
+* not entirely correct
+*hist region, discrete
+
+*7. See the relation between the two categorical variables age and region.
+ta age region
+
+*8. Look at the options of the command used in the previous point and see if there is a way to test the independence of the two variables (tip: Pearson).
+ta age region, chi2
+
+*9. Now, you are interested in understanding if there is a relation between the categorical variable region and the continuous variable pop. Find an appropriate graph to describe this relation. Save and insert it in the Word file.
+
+graph bar (mean) pop, over(region)
+
+graph box pop, over(region)
+
+*10. Now, you want to understand if, in places in which there are more marriages, thereare also more divorces. Find an appropriate graph to describe this relation. 
+
+scatter divorce marriage
+/*tw ///
+(scatter divorce marriage) ///
+(lfit divorce marriage)*/
+
+*11. The relation shown in the previous point may simply depend on the fact that in places where more people live, there are more marriages and more divorces. Compute the ratio of both variables and population and see if the relation changes.
+
+ge share_marriage = marriage/pop
+ge share_divorce = divorce/pop
+
+scatter share_divorce share_marriage
+
+*12. It seems that there is an anomalous value (outlier). Find a way to remove it from the graph. 
+
+*option 1
+preserve
+	drop if share_marriage>0.1
+	scatter share_divorce share_marriage
+restore
+
+*option 2 (even better)
+scatter share_divorce share_marriage if share_marriage<0.1
+
+
+*13. Create a new variable, which is the median value of the age across states and within regions.
+sort region
+by region: egen median_age = median(age)
+
+
+*14. Generate a variable that takes value 1 if the age of the country is higher or equal than its own median.
+ge dummy = 0 if age<median_age
+replace dummy = 1 if age>=median_age
+
+ge dummy2 = age>=median_age
+
+*15. Keep only observations for which the dummy computed in the previous point is equal to one.
+keep if dummy == 1
+
+
+*16. Re-run the graph produced in point 11. Save and insert it in the Word file.
+scatter share_divorce share_marriage
+
+
+
+
+
+
+
+
+
