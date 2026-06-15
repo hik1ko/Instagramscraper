@@ -1,0 +1,41 @@
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EIOprod"
+
+use example_production, clear
+* For the estimate of the Cobb-Douglas, I need to transform everything in logs
+
+* generating logs
+ge y = log(Y)
+ge k = log(K)
+ge l = log(L)
+
+
+* assuming TFP mean independent from inputs
+regr y k l
+
+test l == 1
+
+* testomg for CRS
+test k + l == 1
+
+* assuming that omega_it can be decomposed in eta_i + u_it and u_it is a "surprise" (FE-2)
+
+xtset id year
+xtreg y k l, fe
+
+test l == 1
+
+* you can obtain the same result by running 
+reghdfe y k l, absorb(id)
+
+
+* assuming that omega_it can be decomposed in eta_i + delta_t + u_it (FE-1) and u_it is a "surprise" (FE-2)
+xtreg y k l i.year, fe
+testparm i.year
+
+
+* CO estimator
+xtreg y L.y l L.l k L.k i.year, fe
+
+* test for understanding if the component u_i is serially correlated
+test L1.y
+

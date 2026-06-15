@@ -1,0 +1,48 @@
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EL1"
+
+use VOTE1,clear
+
+describe
+
+summarize voteA shareA
+
+cor voteA shareA, cov
+
+* beta1
+display 520.019/1121.15
+
+* beta0
+summarize voteA shareA
+di 50.50289 - 0.46382643*51.07654
+
+regress voteA shareA
+
+
+use ceosal1,clear
+de salary roe
+su salary roe
+
+
+regress salary roe
+ge roedec = roe/100
+regress salary roedec
+su roedec
+
+
+ge salarydol = salary*1000
+regress salary roe
+regress salarydol roe
+
+
+
+use wage2,clear
+ge lwage = log(wage)
+regr wage educ
+regr lwage educ
+
+
+use ceosal1,clear
+regr lsalary lsales
+
+
+

@@ -1,0 +1,52 @@
+/* GM 30/04/2026: models in characteristics space */
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EIOdemand"
+ls
+use example_demand_data, clear
+
+* here I need to compute the share of people that buy the product j
+ge sj = sells/pop
+* now I need to compute the share of people that do not buy anything
+* the easiest way is to obtain it by doing 1 minus the share of people
+* that buy one product
+by year: egen tot_sells = total(sells)
+ge sj_total = tot_sells/pop
+ge s0 = 1- sj_total
+
+* alternatively
+by year: egen sj_tot = total(sj)
+ge s0bis = 1 - sj_tot
+
+* now I need to compute the dependent variable for models in characteristics space
+ge y = log(sj) - log(s0)
+* or equivalenty
+ge ybis = log(sj/s0)
+
+* regressions
+regr y price
+
+regr y price charact1 charact2 charact3
+
+
+* BLP instrument
+by year: egen sum_x = total(charact1)
+
+ge x_tot_minus = sum_x - charact1
+* how many products are in the market
+by year: ge tot_prod = _N
+
+ge blp = x_tot_minus/(tot_prod-1)
+
+ivreg y (price = blp) charact1 charact2 charact3
+
+
+* computing first stage regression 
+reg price blp charact1 charact2 charact3
+* test for weak instruments
+test blp
+
+
+
+
+
+
+

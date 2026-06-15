@@ -1,0 +1,30 @@
+/*GM 30/04/2026 reshape wide and long */
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EIOdemand"
+ls
+use districts_char_milan, clear
+
+keep id_district year pop_*
+
+reshape wide pop_females pop_males pop_tot, i(id_district) j(year)
+
+ge perc_increase = (pop_tot2018 - pop_tot2011)/pop_tot2011
+
+*-----------------------------------------
+use districts_char_milan, clear
+
+keep id_district year pop_*
+
+reshape long pop_, i(id_district year) j(gender) string
+
+
+
+
+
+
+
+
+
+
+
+
+

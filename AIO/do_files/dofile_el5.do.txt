@@ -1,0 +1,51 @@
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EL5"
+
+use data_vaccines, clear
+* data preparation
+collapse (sum) delivery somm_tot google_thrombosis, by(id_region region day)
+
+ge day_num = date(day, "DMY")
+format day_num %td
+order day_num, after(day)
+drop day
+rename day_num day
+sort id_region day
+
+* within group estimator
+* computing individual specific means
+by id_region: egen mean_somm = mean(somm_tot)
+
+by id_region: egen mean_del = mean(delivery)
+
+* computing deviations from mean
+ge somm_demean = somm_tot - mean_somm
+ge delivery_deman = delivery - mean_del
+
+* regression on the mean deviations
+regress somm_demean delivery_deman
+* that is numerically equivalent to include individual fixed effects
+regress somm_tot delivery i.id_region
+
+* two more efficient way of including individual fixed effects
+* 1. reghdfe (that the first time needs to be installed)
+/*ssc install ftools
+ssc install reghdfe*/
+
+reghdfe somm_tot delivery, absorb(id_region)
+
+* 2. xtreg that requires xtset before
+xtset id_region day
+xtreg somm_tot delivery, fe
+
+* time fixed effects
+reghdfe somm_tot delivery, absorb(id_region day)
+
+xtreg somm_tot delivery i.day, fe
+testparm i.day
+
+* N.B. you can include only variables that change across individual AND time
+* you cannot identify the effects of time-invaring regressors
+use wagepan,clear
+regress lwage married black educ 
+regress lwage married black educ i.nr
+

@@ -1,0 +1,83 @@
+/*EL4: Instrumental variables*/
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EL4"
+
+use labsup,clear
+des hours kids samesex
+
+regr hours kids
+
+ivreg hours (kids = samesex)
+
+* check if the instrument is "relevant" (not-weak) by estimating first-stage regression
+regr kids samesex
+test samesex
+* the instrument is "relevant" (F-test above 10 - see slide 30)
+
+* "validity" -> we cannot directly test it! We need to assume!
+
+
+di 3.127264/0.110799
+
+cor kids samesex
+di 1/0.0358
+
+* first stage regression and test for weak instruments
+regr kids samesex
+test samesex
+* coefficient  of .0699933
+
+* you can obtain the IV estimator as the ratio between the reduced form regression and the first stage regression
+* reduced form regression
+regr hours samesex
+di -.3906929/.0699933
+ivreg hours (kids = samesex)
+
+
+* IV with exogenous controls
+**** CARD data
+use card,clear
+
+regress lwage educ
+
+ivreg lwage (educ = nearc4)
+
+ivreg lwage (educ = nearc4), first
+
+ivreg lwage (educ = nearc4) exper expersq black smsa south reg662-reg669
+
+
+***** 2SLS estimator ***
+* first stage regression
+regress educ nearc4
+* we compute fitted values
+predict educ_fitted
+
+* second stage regression
+regress lwage educ_fitted
+
+
+*** IV with more than one instrument
+ivreg lwage (educ = nearc4 nearc2) exper expersq black smsa south reg662-reg669
+
+* with option first
+ivreg lwage (educ = nearc4 nearc2) exper expersq black smsa south reg662-reg669, first
+
+***** testing for rank-condition
+* compute first-stage regression
+reg educ nearc4 nearc2 exper expersq black smsa south reg662-reg669
+
+test nearc2 nearc4
+
+
+
+
+***** 2SLS estimator with residuals ***
+* first stage regression
+regress educ nearc4
+* we compute residuals values
+predict resid_educ, residuals
+
+* second stage regression
+regress lwage educ resid_educ
+
+

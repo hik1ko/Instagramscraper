@@ -1,0 +1,74 @@
+/* GM 11/03/2026 Multiple regression 
+ - multiple regressions
+ - omitted variable bias
+ - multicollinearity
+*/
+cd "C:\Users\MZZGLC85H04F839U\Documents\AIO\EL2"
+
+use attend,clear
+de final missed
+
+su final missed
+
+* the SST of final is the variance (the square of the std. dev.) multiplied by (n-1)
+di 4.709835^2
+di (4.709835^2)*679
+
+* relation between the coefficient of the simple regression and the coefficient of the same variable when you add an additional control (multiple regression)
+regress final missed
+
+regress final missed priGPA
+
+regr priGPA missed
+di .0172012 + 3.237554*-.042657
+
+su priGPA
+
+corr priGPA missed
+
+*-------------------
+
+* functional form and multicollinearity
+use wage2, clear
+
+ge lwage = log(wage)
+regr lwage educ
+*su IQ
+regr lwage educ IQ
+
+corr educ IQ
+
+
+regr lwage educ
+
+* if I generate one variable that is the linear combination of the other ones, this is not identified
+ge keduc = educ * 2
+regr lwage educ
+regr lwage educ keduc
+
+* this is not true for the NOT-linear combinations, e.g. squares
+regr lwage exper
+ge exper2 = exper^2
+regr lwage exper exper2
+
+* multicollinearity is much more common that expected, for example:
+ge log_exper = log(exper)
+regr lwage log_exper
+
+ge log_exper2 = log(exper2)
+regr lwage log_exper log_exper2
+* note that the log(x^2) is equal to 2*log(x) that is a linear combination of log(x)
+
+ge log_exper2_correct = log(exper)^2
+regr lwage log_exper log_exper2_correct
+
+
+
+
+
+
+
+
+
+
+
